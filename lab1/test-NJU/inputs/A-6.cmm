@@ -1,0 +1,13 @@
+struct Taxi {
+  int id;
+  float speed;
+  float location;
+} taxis[10];
+
+int main(){
+  int a[,] = 1;
+  float cv[ = 2;
+  float speed = taxis[0,1].speed;
+  f(;
+  f(qwe, ,);
+}
