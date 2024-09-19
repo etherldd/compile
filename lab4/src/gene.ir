@@ -1,0 +1,72 @@
+FUNCTION main :
+DEC src_tmp 12
+src := &src_tmp
+DEC dst_tmp 12
+dst := &dst_tmp
+index := #0
+res := #0
+LABEL v0 :
+t0 := index
+t1 := #3
+IF t0 < t1 GOTO v1
+GOTO v2
+LABEL v1 :
+READ t2
+t3 := index
+t4 := #4 * t3
+t5 := src + t4
+*t5 := t2
+t6 := index
+t7 := #1
+index := t6 + t7
+GOTO v0
+LABEL v2 :
+index := #0
+LABEL v3 :
+t8 := index
+t9 := #3
+IF t8 < t9 GOTO v4
+GOTO v5
+LABEL v4 :
+t12 := index
+t13 := #4 * t12
+t14 := src + t13
+t11 := *t14
+t15 := #2
+t10 := t11 * t15
+t16 := index
+t17 := #4 * t16
+t18 := dst + t17
+*t18 := t10
+t19 := index
+t20 := #1
+index := t19 + t20
+GOTO v3
+LABEL v5 :
+index := #0
+LABEL v6 :
+t21 := index
+t22 := #3
+IF t21 < t22 GOTO v7
+GOTO v8
+LABEL v7 :
+t24 := res
+t26 := index
+t27 := #4 * t26
+t28 := src + t27
+t25 := *t28
+t23 := t24 + t25
+t30 := index
+t31 := #4 * t30
+t32 := dst + t31
+t29 := *t32
+res := t23 + t29
+t33 := index
+t34 := #1
+index := t33 + t34
+GOTO v6
+LABEL v8 :
+t35 := res
+WRITE t35
+v9 := #0
+RETURN v9
