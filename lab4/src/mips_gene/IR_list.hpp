@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
+using namespace std;
 
 enum { IR_CONSTANT, IR_VARIABLE, IR_GET_ADDR, IR_DE_REF};
 
@@ -14,12 +16,12 @@ enum { IR_ASSIGN, IR_ADD, IR_SUB, IR_MUL, IR_DIV, IR_GOTO, IR_FUNC,
 typedef struct Operand_* Operand;
 struct Operand_ {
     unsigned int opr_kind;
-    char*        var_str;
+    string       var_str;
 };
 
-Operand ir_Operand_init(unsigned int opr_kind, char* var_str);
+Operand ir_Operand_init(unsigned int opr_kind, string var_str);
 
-char* ir_getOperandVal(Operand o);
+string ir_getOperandVal(Operand o);
 
 typedef struct InterCode {
     unsigned int code_kind;
@@ -30,7 +32,7 @@ typedef struct InterCode {
         struct { Operand label_name; }          label;    //LABEL                       LABEL v3 :           (3)
         struct { Operand func_name; }           func;     //FUNC                        FUNCTION main :      (3)
         struct { Operand op1, op2; 
-                 char*   op;
+                 string  op;
                  Operand desti;}                if_st;    //IF                          IF t0 < t1 GOTO v0  (6)
         struct { Operand val; }                 return_st;//RETURN                      RETURN v15           (2)
         struct { Operand opr; Operand size; }   dec;      //DEC                         DEC src_tmp 12       (3) 
@@ -42,7 +44,7 @@ typedef struct InterCode {
     } u;
 } IR;
 
-char* ir_getInterCodeStr(IR* o);
+string ir_getInterCodeStr(IR* o);
 
 typedef struct IR_list_node {
     IR*                  node;

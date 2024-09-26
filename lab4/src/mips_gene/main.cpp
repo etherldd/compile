@@ -15,7 +15,7 @@ int main() {
             break;
         } 
         string mips_line = gene_target_code(cur_line);
-        mips_file << cur_line << endl;
+        mips_file << mips_line << endl;
     }
     mips32_gene_free();
     return 0;

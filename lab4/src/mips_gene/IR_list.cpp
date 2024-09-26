@@ -4,133 +4,85 @@
 #include <string.h>
 #include "IR_list.hpp"
 
-Operand ir_Operand_init(unsigned int opr_kind, char* var_str) {
+Operand ir_Operand_init(unsigned int opr_kind, string var_str) {
     Operand ret = (Operand)malloc(sizeof(struct Operand_));
     ret->opr_kind = opr_kind;
     ret->var_str = var_str;
     return ret;
 }
 
-char* ir_getOperandVal(Operand o) {
-    char* ret = (char*)calloc(sizeof(char), 20);
+string ir_getOperandVal(Operand o) {
+    string res;
     if (o->opr_kind == IR_VARIABLE) { 
-        strcpy(ret, o->var_str);
+        return o->var_str;
     } else if (o->opr_kind == IR_CONSTANT) {
-        strcat(ret, "#");
-        strcat(ret, o->var_str);
+        res = "#" + o->var_str;
     } else if (o->opr_kind == IR_GET_ADDR) {
-        strcat(ret, "&");
-        strcat(ret, o->var_str);
+        res = "&" + o->var_str;
     } else if (o->opr_kind == IR_DE_REF) {
-        strcat(ret, "*");
-        strcat(ret, o->var_str);
+        res = "*" + o->var_str;
     }
-    return ret;
+    return res;
 }
 
-char* ir_getInterCodeStr(IR* o) {
-    char* ret = (char*)calloc(sizeof(char), 50);
+string ir_getInterCodeStr(IR* o) {
+    string ret;
     if (o->code_kind == IR_ASSIGN) {
-        char* left =  ir_getOperandVal(o->u.assign.left);
-        char* right = ir_getOperandVal(o->u.assign.right);
-        strcat(ret, left);
-        strcat(ret, " := ");
-        strcat(ret, right);
-        free(left);
-        free(right);
+        string left =  ir_getOperandVal(o->u.assign.left);
+        string right = ir_getOperandVal(o->u.assign.right);
+        ret = left + " := " + right;
     } else if (o->code_kind == IR_ADD || o->code_kind == IR_SUB || o->code_kind == IR_MUL || o->code_kind == IR_DIV) {
-        char* op1 = ir_getOperandVal(o->u.op3.op1);
-        char* op2 = ir_getOperandVal(o->u.op3.op2);
-        char* res = ir_getOperandVal(o->u.op3.result);
-        strcat(ret, res);
-        strcat(ret, " := ");
-        strcat(ret, op1);
+        string op1 = ir_getOperandVal(o->u.op3.op1);
+        string op2 = ir_getOperandVal(o->u.op3.op2);
+        string res = ir_getOperandVal(o->u.op3.result);
+        ret = res + " := " + op1;
         if (o->code_kind == IR_ADD) {
-            strcat(ret, " + ");
+            ret += " + ";
         } else if (o->code_kind == IR_SUB) {
-            strcat(ret, " - ");
+            ret += " - ";
         } else if (o->code_kind == IR_MUL) {
-            strcat(ret, " * ");
+            ret += " * ";
         } else {
-            strcat(ret, " / ");
+            ret += " / ";
         }
-        strcat(ret, op2);
-        free(op1);
-        free(op2);
-        free(res);
+        ret += op2;
     } else if (o->code_kind == IR_GOTO) {
-        char* x =  ir_getOperandVal(o->u.goto_st.place);
-        strcat(ret, "GOTO ");
-        strcat(ret, x);
-        free(x);
+        string x =  ir_getOperandVal(o->u.goto_st.place);
+        ret = "GOTO " + x; 
     } else if (o->code_kind == IR_FUNC) {
-        char* x =  ir_getOperandVal(o->u.func.func_name);
-        strcat(ret, "FUNCTION ");
-        strcat(ret, x);
-        strcat(ret, " :");
-        free(x);
+        string x =  ir_getOperandVal(o->u.func.func_name);
+        ret = "FUNCTION " + x + " :";
     } else if (o->code_kind == IR_LABEL) {
-        char* x =  ir_getOperandVal(o->u.label.label_name);
-        strcat(ret, "LABEL ");
-        strcat(ret, x);
-        strcat(ret, " :");
-        free(x);
+        string x =  ir_getOperandVal(o->u.label.label_name);
+        ret = "LABEL " + x + " :";
     } else if (o->code_kind == IR_IF) {
-        char* desti =  ir_getOperandVal(o->u.if_st.desti);
-        char* op1   =  ir_getOperandVal(o->u.if_st.op1);
-        char* op2   =  ir_getOperandVal(o->u.if_st.op2);
-        strcat(ret, "IF ");
-        strcat(ret, op1);
-        strcat(ret, " ");
-        strcat(ret, o->u.if_st.op);
-        strcat(ret, " ");
-        strcat(ret, op2);
-        strcat(ret, " GOTO ");
-        strcat(ret, desti);
-        free(op1);
-        free(op2);
-        free(desti);
+        string desti =  ir_getOperandVal(o->u.if_st.desti);
+        string op1   =  ir_getOperandVal(o->u.if_st.op1);
+        string op2   =  ir_getOperandVal(o->u.if_st.op2);
+        ret = "IF " + op1 + " " + o->u.if_st.op + " " + op2 + " GOTO " + desti;
     } else if (o->code_kind == IR_RETURN) {
-        char* x =  ir_getOperandVal(o->u.return_st.val);
-        strcat(ret, "RETURN ");
-        strcat(ret, x);
-        free(x);
+        string x =  ir_getOperandVal(o->u.return_st.val);
+        ret = "RETURN " + x;
     } else if (o->code_kind == IR_DEC) {
-        char* opr =  ir_getOperandVal(o->u.dec.opr);
-        char* size =  ir_getOperandVal(o->u.dec.size);
-        strcat(ret, "DEC ");
-        strcat(ret, opr);
-        strcat(ret, " ");
-        strcat(ret, size);
-        free(opr);
+        string opr =  ir_getOperandVal(o->u.dec.opr);
+        string size =  ir_getOperandVal(o->u.dec.size);
+        ret = "DEC " + opr + " " + size;
     } else if (o->code_kind == IR_ARG) {
-        char* x =  ir_getOperandVal(o->u.arg.val);
-        strcat(ret, "ARG ");
-        strcat(ret, x);
-        free(x);
+        string x =  ir_getOperandVal(o->u.arg.val);
+        ret = "ARG " + x;
     } else if (o->code_kind == IR_CALL) {
-        char* cur_ret =  ir_getOperandVal(o->u.call.ret);
-        char* func_name = ir_getOperandVal(o->u.call.func);
-        strcat(ret, cur_ret);
-        strcat(ret, " := CALL ");
-        strcat(ret, func_name);
-        free(cur_ret);
-        free(func_name);
+        string cur_ret =  ir_getOperandVal(o->u.call.ret);
+        string func_name = ir_getOperandVal(o->u.call.func);
+        ret = cur_ret + " := CALL " + func_name;
     } else if (o->code_kind == IR_PARAM) {
-        char* x =  ir_getOperandVal(o->u.param.val);
-        strcat(ret, "PARAM ");
-        strcat(ret, x);
-        free(x);
+        string x =  ir_getOperandVal(o->u.param.val);
+        ret = "PARAM " + x;
     } else if (o->code_kind == IR_READ) {
-        char* x =  ir_getOperandVal(o->u.read.val);
-        strcat(ret, "READ ");
-        strcat(ret, x);
-        free(x);
+        string x =  ir_getOperandVal(o->u.read.val);
+        ret = "READ " + x;
     } else if (o->code_kind == IR_WRITE) {
-        char* x =  ir_getOperandVal(o->u.write.val);
-        strcat(ret, "WRITE ");
-        strcat(ret, x);
-        free(x);
+        string x =  ir_getOperandVal(o->u.write.val);
+        ret = "WRITE " + x;
     }
     return ret;
 }
@@ -170,7 +122,7 @@ void ir_write_to_file(IR_LIST* l, char* path) {
     FILE* f = fopen(path, "w");
     IR_list_NODE* cur = l->pfirst;
     for (int i = 0; i < l->length; i++) {
-        char* curStr = ir_getInterCodeStr(cur->node);
+        char* curStr = (char*)ir_getInterCodeStr(cur->node).c_str();
         fputs(curStr, f);
         fputs("\n", f);
         free(curStr);

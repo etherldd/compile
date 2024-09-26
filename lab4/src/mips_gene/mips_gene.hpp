@@ -15,6 +15,7 @@ string gene_target_code(string ir_line); //turn ir_code to mips_code
 
 /*Part 2: The procedure of generating*/
 long getRegOfVar_noNumberConstrain(string var);
+string getRegOfVar(string var);
 vector<string> ir_split(string s);
 Operand oprStringToOpr(string opr_s);
 IR* irStringToIR(string ir_s);

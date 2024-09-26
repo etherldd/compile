@@ -2,6 +2,7 @@
 #include "mips_gene.hpp"
 #include "IR_list.hpp"
 #include <map>
+#include <sstream>
 
 extern string ir_file_name;
 extern string mips_file_name;
@@ -40,30 +41,61 @@ long getRegOfVar_noNumberConstrain(string var) {
     } else {
         long ret = global_counter;
         global_counter++;
+        (*RegOfVar_noNumberConstrain)[var] = ret;
         return ret;
     }
+}
+
+string getRegOfVar(string var) {
+    long num = getRegOfVar_noNumberConstrain(var);
+    ostringstream oss;
+    oss << "$t" << num;
+    string res = oss.str();
+    return res;
 }
 // enum { IR_ASSIGN, IR_ADD, IR_SUB, IR_MUL, IR_DIV, IR_GOTO, IR_FUNC, 
 //         IR_LABEL, IR_IF, IR_RETURN, IR_DEC, IR_ARG, 
 //         IR_CALL, IR_PARAM, IR_READ, IR_WRITE};
 string gene_target_code(string ir_line) {
     IR* cur_IR = irStringToIR(ir_line);
+    string res;
+    string left, op1, op2;
     switch (cur_IR->code_kind)
     {
     case IR_ASSIGN:
         /* t0 := value  */
         break;
     case IR_ADD:
-        /* t4 := t5 * t6 */
+        /* t4 := t5 + t6 */
+        left = getRegOfVar(cur_IR->u.op3.result->var_str);
+        op1 = getRegOfVar(cur_IR->u.op3.op1->var_str);
+        op2 = getRegOfVar(cur_IR->u.op3.op2->var_str);
+        res = "add " + left + ", " + op1 + ", " + op2;
+        return res;
         break;
     case IR_SUB:
-        /* t4 := t5 * t6 */
+        /* t4 := t5 - t6 */
+        left = getRegOfVar(cur_IR->u.op3.result->var_str);
+        op1 = getRegOfVar(cur_IR->u.op3.op1->var_str);
+        op2 = getRegOfVar(cur_IR->u.op3.op2->var_str);
+        res = "sub " + left + ", " + op1 + ", " + op2;
+        return res;
         break;
     case IR_MUL:
         /* t4 := t5 * t6 */
+        left = getRegOfVar(cur_IR->u.op3.result->var_str);
+        op1 = getRegOfVar(cur_IR->u.op3.op1->var_str);
+        op2 = getRegOfVar(cur_IR->u.op3.op2->var_str);
+        res = "mult " + left + ", " + op1 + ", " + op2;
+        return res;
         break;
     case IR_DIV:
-        /* t4 := t5 * t6 */
+        /* t4 := t5 / t6 */
+        left = getRegOfVar(cur_IR->u.op3.result->var_str);
+        op1 = getRegOfVar(cur_IR->u.op3.op1->var_str);
+        op2 = getRegOfVar(cur_IR->u.op3.op2->var_str);
+        res = "div " + left + ", " + op1 + ", " + op2;
+        return res;
         break;
     case IR_GOTO:
         /* GOTO v4 */
@@ -131,8 +163,17 @@ Operand oprStringToOpr(string opr_s) {
     }
 }
 
+
+void print_vec(vector<string>& ir_vec) {
+    for (auto& i : ir_vec) {
+        cout << i << " ";
+    }
+    cout << endl;
+}
+
 IR* irStringToIR(string ir_s) {
     vector<string> ir_vec = ir_split(ir_s);
+    //print_vec(ir_vec);
     int length = ir_vec.size();
     IR* ret = (IR*) malloc(sizeof(IR));
     switch (length)

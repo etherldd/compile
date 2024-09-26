@@ -33,13 +33,17 @@ lexical: $(LFILE)
 syntax-c: $(YFILE)
 	$(BISON) -o ./mid/$(YFC) -d -v $(YFILE)
 
-mips:
-	g++ ./mips_gene/mips_gene.cpp ./mips_gene/main.cpp ./mips_gene/IR_list.cpp -o ./mips
-
+m:
+	g++ ./mips_gene/mips_gene.cpp ./mips_gene/main.cpp ./mips_gene/IR_list.cpp -o ./m
+	./m
+mclean:
+	rm -rf ./mips
 -include $(patsubst %.o, %.d, $(OBJS))
 
 # 定义的一些伪目标
 .PHONY: clean test1 test2
+a0: all
+	./parser ../test/inputs/mips_test.cmm ./gene.ir
 a1: all
 	./parser ../test/inputs/A-1.cmm ./gene.ir
 a2: all
