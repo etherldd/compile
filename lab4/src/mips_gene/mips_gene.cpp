@@ -59,11 +59,22 @@ string getRegOfVar(string var) {
 string gene_target_code(string ir_line) {
     IR* cur_IR = irStringToIR(ir_line);
     string res;
-    string left, op1, op2;
+    string left, op1, op2, right;
     switch (cur_IR->code_kind)
     {
     case IR_ASSIGN:
         /* t0 := value  */
+        left = getRegOfVar(cur_IR->u.assign.left->var_str);
+        if (cur_IR->u.assign.right->opr_kind == IR_CONSTANT) {
+            res = "add " + left + ", $r0, " + op2;
+        } else if (cur_IR->u.assign.right->opr_kind == IR_VARIABLE) {
+            res = "add " + left + ", $r0, " + op2;
+        } else if (cur_IR->u.assign.right->opr_kind == IR_GET_ADDR) {
+            res = "add " + left + ", " + op1 + ", " + op2;
+        } else {//IR_DE_REF
+            res = "add " + left + ", " + op1 + ", " + op2;
+        }
+        return res;
         break;
     case IR_ADD:
         /* t4 := t5 + t6 */
