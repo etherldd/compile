@@ -9,22 +9,122 @@ extern string mips_file_name;
 extern fstream ir_file;
 extern ofstream mips_file;
 
-map<string, int>*  RegOfVar_noNumberConstrain = NULL;
+map<string, int>                            *RegOfVar_noNumberConstrain = NULL;
+map<string, pair<map<string, int>*, int>*>  *Func_to_Var_offset_table   = NULL;
 long global_counter = 1; 
+string                                      cur_funcname = "";
+
+map<string, int> mips32_getfunc_table(string func) {
+    if (!Func_to_Var_offset_table->count(func)) {
+        map<string, int> ret;
+        return ret;
+    }
+    return *((*Func_to_Var_offset_table)[func]->first);
+}
+
+int mips32_getfunc_size(string func) {
+    if (!Func_to_Var_offset_table->count(func)) {
+        return 0;
+    }
+    return ((*Func_to_Var_offset_table)[func]->second);
+}
+
+
+
+void mips32_scan_and_set_table() {
+    //store the (key, value) pair
+    //key: value_name
+    //val: offset
+    int size = 0;
+    ir_file.open(ir_file_name);
+    string cur_scan_funcname = "";
+    while (true) {
+        string cur_line = get_next_line();
+        if (cur_line == "") {
+            if (cur_scan_funcname != "") {
+                ((*Func_to_Var_offset_table)[cur_scan_funcname]->second) = size;
+            }
+            break;
+        } 
+        IR* cur_IR = irStringToIR(cur_line);
+        if (cur_IR->code_kind == IR_FUNC) {
+            if (cur_scan_funcname != "") {
+                ((*Func_to_Var_offset_table)[cur_scan_funcname]->second) = size;
+            }
+            map<string, int>* temp_map = new map<string, int>();
+            pair<map<string, int>*, int>* temp_pair = new pair<map<string, int>*, int>(temp_map, 0);
+            (*Func_to_Var_offset_table)[cur_IR->u.func.func_name->var_str] = temp_pair;
+            cur_scan_funcname = cur_IR->u.func.func_name->var_str;
+            size = 0;
+        }
+        switch (cur_IR->code_kind)
+        {
+            case IR_ASSIGN:
+                /* a = b */
+                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.assign.left->var_str)) {
+                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.assign.left->var_str] = size;
+                    size += 4;
+                }
+                break;
+            case IR_ADD:
+                /* t4 := t5 + t6 */
+                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
+                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                    size += 4;
+                }
+                break;
+            case IR_SUB:
+                /* t4 := t5 - t6 */
+                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
+                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                    size += 4;
+                }
+                break;
+            case IR_MUL:
+                /* t4 := t5 * t6 */
+                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
+                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                    size += 4;
+                }
+                break;
+            case IR_DIV:
+                /* t4 := t5 / t6 */
+                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
+                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                    size += 4;
+                }
+                break;
+            case IR_CALL:
+                /* t6 := CALL factorial */
+                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.call.ret->var_str)) {
+                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.call.ret->var_str] = size;
+                    size += 4;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    ir_file.close();
+}
+
+
+
+
 
 
 void mips32_gene_init() {
-    ir_file.open(ir_file_name);
     mips_file.open(mips_file_name, ios::trunc);
     RegOfVar_noNumberConstrain = new map<string, int>();
+    Func_to_Var_offset_table = new map<string, pair<map<string, int>*, int>*>();
 }
 
 void mips32_gene_free() {
     //1. close file
-    ir_file.close();
     mips_file.close();
     //2. free mem
     delete RegOfVar_noNumberConstrain;
+    delete Func_to_Var_offset_table;
 }
 
 string get_next_line() {
@@ -57,22 +157,32 @@ string getRegOfVar(string var) {
 //         IR_LABEL, IR_IF, IR_RETURN, IR_DEC, IR_ARG, 
 //         IR_CALL, IR_PARAM, IR_READ, IR_WRITE};
 string gene_target_code(string ir_line) {
-    IR* cur_IR = irStringToIR(ir_line);
-    string res;
-    string left, op1, op2, right;
+    IR*     cur_IR = irStringToIR(ir_line);
+    string  res;
+    string  left, op1, op2, right;
+    ostringstream oss_start, oss_end;
+    
+    int     size;
     switch (cur_IR->code_kind)
     {
     case IR_ASSIGN:
         /* t0 := value  */
         left = getRegOfVar(cur_IR->u.assign.left->var_str);
         if (cur_IR->u.assign.right->opr_kind == IR_CONSTANT) {
-            res = "add " + left + ", $r0, " + op2;
+            res = "li " + left + ", " + cur_IR->u.assign.right->var_str;
         } else if (cur_IR->u.assign.right->opr_kind == IR_VARIABLE) {
+            op2 = getRegOfVar(cur_IR->u.assign.right->var_str);
             res = "add " + left + ", $r0, " + op2;
         } else if (cur_IR->u.assign.right->opr_kind == IR_GET_ADDR) {
-            res = "add " + left + ", " + op1 + ", " + op2;
+            int total_size = mips32_getfunc_size(cur_funcname);
+            int cur_offset = mips32_getfunc_table(cur_funcname)[cur_IR->u.assign.right->var_str];
+            int delta = total_size - cur_offset;
+            oss_start << "add " + left + ", $sp, " << delta;
+            res = oss_start.str();
+            oss_start.str("");
         } else {//IR_DE_REF
-            res = "add " + left + ", " + op1 + ", " + op2;
+            op1 = cur_IR->u.assign.right->var_str; 
+            res = "la " + left + ", " + op1;
         }
         return res;
         break;
@@ -113,6 +223,7 @@ string gene_target_code(string ir_line) {
         break;
     case IR_FUNC:
         /* FUNCTION main : */
+        cur_funcname = cur_IR->u.func.func_name->var_str;
         break;
     case IR_LABEL:
         /* LABEL v3 : */
@@ -131,6 +242,17 @@ string gene_target_code(string ir_line) {
         break;
     case IR_CALL:
         /* t6 := CALL factorial */
+        size = mips32_getfunc_size(cur_IR->u.call.func->var_str);
+        //pre
+        oss_start << "addi $sp, $sp, -" << size;
+        mips_file << oss_start.str() << endl;
+        oss_start.str("");
+        //mid
+        mips_file << "jal " + cur_IR->u.call.func->var_str << endl;
+        //end
+        oss_end << "addi $sp, $sp, " << size;
+        mips_file << oss_end.str() << endl;
+        oss_end.str("");
         break;
     case IR_PARAM:
         /* PARAM m */
@@ -164,13 +286,13 @@ vector<string> ir_split(string s) {
 
 Operand oprStringToOpr(string opr_s) {
     if (opr_s[0] == '#') {
-        return ir_Operand_init(IR_CONSTANT, (char*)(opr_s.substr(1).c_str()));
+        return ir_Operand_init(IR_CONSTANT, (opr_s.substr(1)));
     } else if (opr_s[0] == '*') {
-        return ir_Operand_init(IR_DE_REF,   (char*)(opr_s.substr(1).c_str()));
+        return ir_Operand_init(IR_DE_REF,   (opr_s.substr(1)));
     } else if (opr_s[0] == '&') {
-        return ir_Operand_init(IR_GET_ADDR, (char*)(opr_s.substr(1).c_str()));
+        return ir_Operand_init(IR_GET_ADDR, (opr_s.substr(1)));
     } else {
-        return ir_Operand_init(IR_VARIABLE, (char*)(opr_s.c_str()));
+        return ir_Operand_init(IR_VARIABLE, (opr_s));
     }
 }
 

@@ -34,10 +34,11 @@ syntax-c: $(YFILE)
 	$(BISON) -o ./mid/$(YFC) -d -v $(YFILE)
 
 m:
-	g++ ./mips_gene/mips_gene.cpp ./mips_gene/main.cpp ./mips_gene/IR_list.cpp -o ./m
-	./m
-mclean:
+	g++ -g ./mips_gene/mips_gene.cpp ./mips_gene/main.cpp ./mips_gene/IR_list.cpp -o ./m
+	
+mc:
 	rm -rf ./mips
+	rm -rf ./m
 -include $(patsubst %.o, %.d, $(OBJS))
 
 # 定义的一些伪目标

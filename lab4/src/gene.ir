@@ -1,22 +1,66 @@
+FUNCTION factorial :
+PARAM m
+f_res := #1
+LABEL v0 :
+t0 := m
+t1 := #1
+IF t0 > t1 GOTO v1
+GOTO v2
+LABEL v1 :
+t2 := &t0
+t3 := m
+f_res := t2 * t3
+t4 := m
+t5 := #1
+m := t4 - t5
+GOTO v0
+LABEL v2 :
+v3 := f_res
+RETURN v3
+FUNCTION cal_combiniation :
+PARAM c_base
+PARAM c_num
+t7 := c_base
+ARG t7
+t6 := CALL factorial
+t10 := c_num
+ARG t10
+t9 := CALL factorial
+t13 := c_base
+t14 := c_num
+t12 := t13 - t14
+ARG t12
+t11 := CALL factorial
+t8 := t9 * t11
+v4 := t6 / t8
+RETURN v4
+FUNCTION cal_permutation :
+PARAM p_base
+PARAM p_num
+t16 := p_base
+ARG t16
+t15 := CALL factorial
+t19 := p_base
+t20 := p_num
+t18 := t19 - t20
+ARG t18
+t17 := CALL factorial
+v5 := t15 / t17
+RETURN v5
 FUNCTION main :
-answer := #0
-x := #369
-y := #258
-z := #147
-t3 := x
-t4 := y
-t2 := t3 + t4
-t5 := z
-t1 := t2 + t5
-t7 := x
-t8 := y
-t6 := t7 - t8
-t0 := t1 * t6
-t10 := x
-t11 := z
-t9 := t10 - t11
-a := t0 / t9
-t12 := a
-WRITE t12
-v0 := #0
-RETURN v0
+READ n
+READ k
+t22 := k
+t23 := n
+ARG t22
+ARG t23
+t21 := CALL cal_combiniation
+WRITE t21
+t25 := k
+t26 := n
+ARG t25
+ARG t26
+t24 := CALL cal_permutation
+WRITE t24
+v6 := #0
+RETURN v6

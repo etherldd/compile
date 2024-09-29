@@ -5,7 +5,7 @@
 #include "IR_list.hpp"
 
 Operand ir_Operand_init(unsigned int opr_kind, string var_str) {
-    Operand ret = (Operand)malloc(sizeof(struct Operand_));
+    Operand ret = new Operand_();
     ret->opr_kind = opr_kind;
     ret->var_str = var_str;
     return ret;
