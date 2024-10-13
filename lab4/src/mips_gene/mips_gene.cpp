@@ -1,4 +1,3 @@
-
 #include "mips_gene.hpp"
 #include "IR_list.hpp"
 #include <map>
@@ -9,27 +8,28 @@ extern string mips_file_name;
 extern fstream ir_file;
 extern ofstream mips_file;
 
-map<string, int>                            *RegOfVar_noNumberConstrain = NULL;
-map<string, pair<map<string, int>*, int>*>  *Func_to_Var_offset_table   = NULL;
-long global_counter = 1; 
-string                                      cur_funcname = "";
+map<string, int> RegOfVar;  // Mapping from variable name to register number
+map<string, map<string, int>> FuncVarOffsetTable;  // Mapping from function name to (variable name, offset) mapping
+int globalRegCounter = 1;  // Global register counter
+string currentFuncName = "";  // Current function being processed
 
 map<string, int> mips32_getfunc_table(string func) {
-    if (!Func_to_Var_offset_table->count(func)) {
-        map<string, int> ret;
-        return ret;
+    if (FuncVarOffsetTable.find(func) == FuncVarOffsetTable.end()) {
+        return map<string, int>();
     }
-    return *((*Func_to_Var_offset_table)[func]->first);
+    return FuncVarOffsetTable[func];
 }
 
 int mips32_getfunc_size(string func) {
-    if (!Func_to_Var_offset_table->count(func)) {
+    if (FuncVarOffsetTable.find(func) == FuncVarOffsetTable.end()) {
         return 0;
     }
-    return ((*Func_to_Var_offset_table)[func]->second);
+    int maxOffset = 0;
+    for (const auto& pair : FuncVarOffsetTable[func]) {
+        maxOffset = max(maxOffset, pair.second);
+    }
+    return maxOffset + 4;  // Assume each variable occupies 4 bytes
 }
-
-
 
 void mips32_scan_and_set_table() {
     //store the (key, value) pair
@@ -42,62 +42,60 @@ void mips32_scan_and_set_table() {
         string cur_line = get_next_line();
         if (cur_line == "") {
             if (cur_scan_funcname != "") {
-                ((*Func_to_Var_offset_table)[cur_scan_funcname]->second) = size;
+                // No additional operation needed, as we store directly in FuncVarOffsetTable
             }
             break;
         } 
         IR* cur_IR = irStringToIR(cur_line);
         if (cur_IR->code_kind == IR_FUNC) {
-            if (cur_scan_funcname != "") {
-                ((*Func_to_Var_offset_table)[cur_scan_funcname]->second) = size;
+            if (!currentFuncName.empty()) {
+                // No additional operation needed, as we store directly in FuncVarOffsetTable
             }
-            map<string, int>* temp_map = new map<string, int>();
-            pair<map<string, int>*, int>* temp_pair = new pair<map<string, int>*, int>(temp_map, 0);
-            (*Func_to_Var_offset_table)[cur_IR->u.func.func_name->var_str] = temp_pair;
-            cur_scan_funcname = cur_IR->u.func.func_name->var_str;
+            currentFuncName = cur_IR->u.func.func_name->var_str;
+            FuncVarOffsetTable[currentFuncName] = map<string, int>();
             size = 0;
         }
         switch (cur_IR->code_kind)
         {
             case IR_ASSIGN:
                 /* a = b */
-                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.assign.left->var_str)) {
-                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.assign.left->var_str] = size;
+                if (FuncVarOffsetTable[currentFuncName].find(cur_IR->u.assign.left->var_str) == FuncVarOffsetTable[currentFuncName].end()) {
+                    FuncVarOffsetTable[currentFuncName][cur_IR->u.assign.left->var_str] = size;
                     size += 4;
                 }
                 break;
             case IR_ADD:
                 /* t4 := t5 + t6 */
-                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
-                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                if (FuncVarOffsetTable[currentFuncName].find(cur_IR->u.op3.result->var_str) == FuncVarOffsetTable[currentFuncName].end()) {
+                    FuncVarOffsetTable[currentFuncName][cur_IR->u.op3.result->var_str] = size;
                     size += 4;
                 }
                 break;
             case IR_SUB:
                 /* t4 := t5 - t6 */
-                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
-                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                if (FuncVarOffsetTable[currentFuncName].find(cur_IR->u.op3.result->var_str) == FuncVarOffsetTable[currentFuncName].end()) {
+                    FuncVarOffsetTable[currentFuncName][cur_IR->u.op3.result->var_str] = size;
                     size += 4;
                 }
                 break;
             case IR_MUL:
                 /* t4 := t5 * t6 */
-                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
-                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                if (FuncVarOffsetTable[currentFuncName].find(cur_IR->u.op3.result->var_str) == FuncVarOffsetTable[currentFuncName].end()) {
+                    FuncVarOffsetTable[currentFuncName][cur_IR->u.op3.result->var_str] = size;
                     size += 4;
                 }
                 break;
             case IR_DIV:
                 /* t4 := t5 / t6 */
-                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.op3.result->var_str)) {
-                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.op3.result->var_str] = size;
+                if (FuncVarOffsetTable[currentFuncName].find(cur_IR->u.op3.result->var_str) == FuncVarOffsetTable[currentFuncName].end()) {
+                    FuncVarOffsetTable[currentFuncName][cur_IR->u.op3.result->var_str] = size;
                     size += 4;
                 }
                 break;
             case IR_CALL:
                 /* t6 := CALL factorial */
-                if (!((*Func_to_Var_offset_table)[cur_scan_funcname]->first)->count(cur_IR->u.call.ret->var_str)) {
-                    (*((*Func_to_Var_offset_table)[cur_scan_funcname]->first))[cur_IR->u.call.ret->var_str] = size;
+                if (FuncVarOffsetTable[currentFuncName].find(cur_IR->u.call.ret->var_str) == FuncVarOffsetTable[currentFuncName].end()) {
+                    FuncVarOffsetTable[currentFuncName][cur_IR->u.call.ret->var_str] = size;
                     size += 4;
                 }
                 break;
@@ -108,23 +106,18 @@ void mips32_scan_and_set_table() {
     ir_file.close();
 }
 
-
-
-
-
-
 void mips32_gene_init() {
     mips_file.open(mips_file_name, ios::trunc);
-    RegOfVar_noNumberConstrain = new map<string, int>();
-    Func_to_Var_offset_table = new map<string, pair<map<string, int>*, int>*>();
+    RegOfVar = map<string, int>();
+    FuncVarOffsetTable = map<string, map<string, int>>();
 }
 
 void mips32_gene_free() {
     //1. close file
     mips_file.close();
     //2. free mem
-    delete RegOfVar_noNumberConstrain;
-    delete Func_to_Var_offset_table;
+    RegOfVar.clear();
+    FuncVarOffsetTable.clear();
 }
 
 string get_next_line() {
@@ -133,15 +126,12 @@ string get_next_line() {
     return ret;
 }
 
-
-
 long getRegOfVar_noNumberConstrain(string var) {
-    if (RegOfVar_noNumberConstrain->count(var)) {
-        return RegOfVar_noNumberConstrain->at(var);
+    if (RegOfVar.find(var) != RegOfVar.end()) {
+        return RegOfVar[var];
     } else {
-        long ret = global_counter;
-        global_counter++;
-        (*RegOfVar_noNumberConstrain)[var] = ret;
+        long ret = globalRegCounter++;
+        RegOfVar[var] = ret;
         return ret;
     }
 }
@@ -174,8 +164,8 @@ string gene_target_code(string ir_line) {
             op2 = getRegOfVar(cur_IR->u.assign.right->var_str);
             res = "add " + left + ", $r0, " + op2;
         } else if (cur_IR->u.assign.right->opr_kind == IR_GET_ADDR) {
-            int total_size = mips32_getfunc_size(cur_funcname);
-            int cur_offset = mips32_getfunc_table(cur_funcname)[cur_IR->u.assign.right->var_str];
+            int total_size = mips32_getfunc_size(currentFuncName);
+            int cur_offset = mips32_getfunc_table(currentFuncName)[cur_IR->u.assign.right->var_str];
             int delta = total_size - cur_offset;
             oss_start << "add " + left + ", $sp, " << delta;
             res = oss_start.str();
@@ -223,7 +213,7 @@ string gene_target_code(string ir_line) {
         break;
     case IR_FUNC:
         /* FUNCTION main : */
-        cur_funcname = cur_IR->u.func.func_name->var_str;
+        currentFuncName = cur_IR->u.func.func_name->var_str;
         break;
     case IR_LABEL:
         /* LABEL v3 : */
@@ -296,7 +286,6 @@ Operand oprStringToOpr(string opr_s) {
     }
 }
 
-
 void print_vec(vector<string>& ir_vec) {
     for (auto& i : ir_vec) {
         cout << i << " ";
@@ -306,9 +295,10 @@ void print_vec(vector<string>& ir_vec) {
 
 IR* irStringToIR(string ir_s) {
     vector<string> ir_vec = ir_split(ir_s);
-    //print_vec(ir_vec);
     int length = ir_vec.size();
     IR* ret = (IR*) malloc(sizeof(IR));
+    string copy_op; // 将变量声明移到switch语句之前
+
     switch (length)
     {
     case 2:
@@ -381,7 +371,9 @@ IR* irStringToIR(string ir_s) {
         ret->u.if_st.desti = oprStringToOpr(ir_vec[5]);
         ret->u.if_st.op1 = oprStringToOpr(ir_vec[1]);
         ret->u.if_st.op2 = oprStringToOpr(ir_vec[3]);
-        ret->u.if_st.op = (char*)ir_vec[2].c_str();
+        
+        copy_op = ir_vec[2]; // 移动赋值操作到这里
+        ret->u.if_st.op = (char*)copy_op.c_str();
         break;
     default:
         cout << "detect more than 6 args in ir_code" << endl;
@@ -391,9 +383,3 @@ IR* irStringToIR(string ir_s) {
     }
     return ret;
 }
-
-
-
-
-
-

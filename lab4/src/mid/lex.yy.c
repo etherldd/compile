@@ -588,6 +588,7 @@ static int yy_more_len = 0;
 char *yytext;
 #line 1 "./lexical.l"
 #line 2 "./lexical.l"
+    #define _POSIX_C_SOURCE 200809L
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
@@ -601,9 +602,12 @@ char *yytext;
     //     yycolumn += yyleng;
     unsigned int curline = 1;
     int flexError = 0;
-#line 605 "./mid/./lex.yy.c"
+#ifdef __GNUC__
+extern int fileno(FILE *stream);
+#endif
+#line 609 "./mid/./lex.yy.c"
 
-#line 607 "./mid/./lex.yy.c"
+#line 611 "./mid/./lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -821,9 +825,9 @@ YY_DECL
 		}
 
 	{
-#line 23 "./lexical.l"
+#line 27 "./lexical.l"
 
-#line 827 "./mid/./lex.yy.c"
+#line 831 "./mid/./lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -898,7 +902,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 24 "./lexical.l"
+#line 28 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -912,7 +916,7 @@ case 2:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 31 "./lexical.l"
+#line 35 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -926,7 +930,7 @@ case 3:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 38 "./lexical.l"
+#line 42 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -940,7 +944,7 @@ case 4:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 45 "./lexical.l"
+#line 49 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -951,7 +955,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 52 "./lexical.l"
+#line 56 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -962,7 +966,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 59 "./lexical.l"
+#line 63 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -973,7 +977,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 66 "./lexical.l"
+#line 70 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -984,7 +988,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 73 "./lexical.l"
+#line 77 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -995,7 +999,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 80 "./lexical.l"
+#line 84 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1006,7 +1010,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 87 "./lexical.l"
+#line 91 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1017,7 +1021,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 94 "./lexical.l"
+#line 98 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1028,7 +1032,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 101 "./lexical.l"
+#line 105 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1039,7 +1043,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 108 "./lexical.l"
+#line 112 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1050,7 +1054,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 115 "./lexical.l"
+#line 119 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1061,7 +1065,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 122 "./lexical.l"
+#line 126 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1072,7 +1076,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 129 "./lexical.l"
+#line 133 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1083,7 +1087,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 136 "./lexical.l"
+#line 140 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1094,7 +1098,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 143 "./lexical.l"
+#line 147 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1105,7 +1109,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 150 "./lexical.l"
+#line 154 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1116,7 +1120,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 157 "./lexical.l"
+#line 161 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1127,7 +1131,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 164 "./lexical.l"
+#line 168 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1138,7 +1142,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 171 "./lexical.l"
+#line 175 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1149,7 +1153,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 178 "./lexical.l"
+#line 182 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1160,7 +1164,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 185 "./lexical.l"
+#line 189 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1171,7 +1175,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 192 "./lexical.l"
+#line 196 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1182,7 +1186,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 199 "./lexical.l"
+#line 203 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1193,7 +1197,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 206 "./lexical.l"
+#line 210 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1204,7 +1208,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 213 "./lexical.l"
+#line 217 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1215,7 +1219,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 220 "./lexical.l"
+#line 224 "./lexical.l"
 {
     char* curval = malloc(sizeof(char) * (yyleng + 1));
     strcpy(curval, yytext);
@@ -1227,7 +1231,7 @@ YY_RULE_SETUP
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 227 "./lexical.l"
+#line 231 "./lexical.l"
 {
     curline += 1;
     yycolumn = 1;
@@ -1235,36 +1239,36 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 231 "./lexical.l"
+#line 235 "./lexical.l"
 {}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 232 "./lexical.l"
+#line 236 "./lexical.l"
 {}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 233 "./lexical.l"
+#line 237 "./lexical.l"
 { BEGIN(COMMENT); }
 	YY_BREAK
 
 case 34:
 YY_RULE_SETUP
-#line 235 "./lexical.l"
+#line 239 "./lexical.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 236 "./lexical.l"
+#line 240 "./lexical.l"
 ; /* 忽略注释中的其他字符 */
 	YY_BREAK
 
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 238 "./lexical.l"
+#line 242 "./lexical.l"
 {
     if (yytext[yyleng - 2] == '\\') {
         yyless(yyleng - 1);
@@ -1274,7 +1278,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 244 "./lexical.l"
+#line 248 "./lexical.l"
 {
     printf("Error type A at Line %d: Mysterious characters \"%c", yylineno, yytext[0]);
     flexError = 1;
@@ -1292,10 +1296,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 258 "./lexical.l"
+#line 262 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1299 "./mid/./lex.yy.c"
+#line 1303 "./mid/./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 	yyterminate();
@@ -2313,5 +2317,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 258 "./lexical.l"
+#line 262 "./lexical.l"
 

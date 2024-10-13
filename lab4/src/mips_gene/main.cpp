@@ -8,9 +8,14 @@ string mips_file_name = "./gene.mips";
 fstream ir_file;
 ofstream mips_file;
 
-int main() {
+int main(int argc, char** argv) {
     mips32_gene_init();
     mips32_scan_and_set_table();
+    if (argc == 2) {
+        ir_file_name = argv[1];
+    } else if (argc >= 3) {
+        printf("usage: ./mips_gene <ir_file_name>\n");
+    }
     ir_file.open(ir_file_name);
     
     while (true) {
@@ -23,6 +28,6 @@ int main() {
     }
     
     ir_file.close();
-    mips32_gene_free();
+    //mips32_gene_free();
     return 0;
 }

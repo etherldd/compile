@@ -1,66 +1,72 @@
-FUNCTION factorial :
-PARAM m
-f_res := #1
+FUNCTION main :
+DEC src_tmp 12
+src := &src_tmp
+DEC dst_tmp 12
+dst := &dst_tmp
+index := #0
+res := #0
 LABEL v0 :
-t0 := m
-t1 := #1
-IF t0 > t1 GOTO v1
+t0 := index
+t1 := #3
+IF t0 < t1 GOTO v1
 GOTO v2
 LABEL v1 :
-t2 := &t0
-t3 := m
-f_res := t2 * t3
-t4 := m
-t5 := #1
-m := t4 - t5
+READ t2
+t3 := index
+t4 := #4 * t3
+t5 := src + t4
+*t5 := t2
+t6 := index
+t7 := #1
+index := t6 + t7
 GOTO v0
 LABEL v2 :
-v3 := f_res
-RETURN v3
-FUNCTION cal_combiniation :
-PARAM c_base
-PARAM c_num
-t7 := c_base
-ARG t7
-t6 := CALL factorial
-t10 := c_num
-ARG t10
-t9 := CALL factorial
-t13 := c_base
-t14 := c_num
-t12 := t13 - t14
-ARG t12
-t11 := CALL factorial
-t8 := t9 * t11
-v4 := t6 / t8
-RETURN v4
-FUNCTION cal_permutation :
-PARAM p_base
-PARAM p_num
-t16 := p_base
-ARG t16
-t15 := CALL factorial
-t19 := p_base
-t20 := p_num
-t18 := t19 - t20
-ARG t18
-t17 := CALL factorial
-v5 := t15 / t17
-RETURN v5
-FUNCTION main :
-READ n
-READ k
-t22 := k
-t23 := n
-ARG t22
-ARG t23
-t21 := CALL cal_combiniation
-WRITE t21
-t25 := k
-t26 := n
-ARG t25
-ARG t26
-t24 := CALL cal_permutation
-WRITE t24
-v6 := #0
-RETURN v6
+index := #0
+LABEL v3 :
+t8 := index
+t9 := #3
+IF t8 < t9 GOTO v4
+GOTO v5
+LABEL v4 :
+t12 := index
+t13 := #4 * t12
+t14 := src + t13
+t11 := *t14
+t15 := #2
+t10 := t11 * t15
+t16 := index
+t17 := #4 * t16
+t18 := dst + t17
+*t18 := t10
+t19 := index
+t20 := #1
+index := t19 + t20
+GOTO v3
+LABEL v5 :
+index := #0
+LABEL v6 :
+t21 := index
+t22 := #3
+IF t21 < t22 GOTO v7
+GOTO v8
+LABEL v7 :
+t24 := res
+t26 := index
+t27 := #4 * t26
+t28 := src + t27
+t25 := *t28
+t23 := t24 + t25
+t30 := index
+t31 := #4 * t30
+t32 := dst + t31
+t29 := *t32
+res := t23 + t29
+t33 := index
+t34 := #1
+index := t33 + t34
+GOTO v6
+LABEL v8 :
+t35 := res
+WRITE t35
+v9 := #0
+RETURN v9

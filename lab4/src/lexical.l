@@ -1,4 +1,5 @@
 %{
+    #define _POSIX_C_SOURCE 200809L
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
@@ -12,6 +13,9 @@
     //     yycolumn += yyleng;
     unsigned int curline = 1;
     int flexError = 0;
+#ifdef __GNUC__
+extern int fileno(FILE *stream);
+#endif
 %}
 %option     yylineno
 %x          COMMENT

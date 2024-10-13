@@ -32,7 +32,7 @@ typedef struct InterCode {
         struct { Operand label_name; }          label;    //LABEL                       LABEL v3 :           (3)
         struct { Operand func_name; }           func;     //FUNC                        FUNCTION main :      (3)
         struct { Operand op1, op2; 
-                 string  op;
+                 char*  op;
                  Operand desti;}                if_st;    //IF                          IF t0 < t1 GOTO v0  (6)
         struct { Operand val; }                 return_st;//RETURN                      RETURN v15           (2)
         struct { Operand opr; Operand size; }   dec;      //DEC                         DEC src_tmp 12       (3) 

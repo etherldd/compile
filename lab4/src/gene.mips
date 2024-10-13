@@ -1,87 +1,72 @@
 
 
-li $t1, 1
+add $t1, $sp, 160
 
-add $t2, $r0, $t3
-li $t4, 1
+add $t2, $sp, 160
+li $t3, 0
+li $t4, 0
+
+add $t5, $r0, $t3
+li $t6, 3
 
 
 
-add $t5, $sp, 32
-add $t6, $r0, $t3
-mult $t1, $t5, $t6
+
 add $t7, $r0, $t3
-li $t8, 1
-sub $t3, $t7, $t8
-
-
-add $t9, $r0, $t1
-
-
-
-
+mult $t8, $t9, $t7
+add $t10, $t1, $t8
 add $t10, $r0, $t11
+add $t12, $r0, $t3
+li $t13, 1
+add $t3, $t12, $t13
 
-addi $sp, $sp, -36
-jal factorial
-addi $sp, $sp, 36
 
-add $t12, $r0, $t13
+li $t3, 0
 
-addi $sp, $sp, -36
-jal factorial
-addi $sp, $sp, 36
-
-add $t14, $r0, $t11
-add $t15, $r0, $t13
-sub $t16, $t14, $t15
-
-addi $sp, $sp, -36
-jal factorial
-addi $sp, $sp, 36
-
-mult $t17, $t18, $t19
-div $t20, $t21, $t17
+add $t14, $r0, $t3
+li $t15, 3
 
 
 
-
-add $t22, $r0, $t23
-
-addi $sp, $sp, -36
-jal factorial
-addi $sp, $sp, 36
-
-add $t24, $r0, $t23
-add $t25, $r0, $t26
-sub $t27, $t24, $t25
-
-addi $sp, $sp, -36
-jal factorial
-addi $sp, $sp, 36
-
-div $t28, $t29, $t30
+add $t16, $r0, $t3
+mult $t17, $t9, $t16
+add $t18, $t1, $t17
+la $t19, t14
+li $t20, 2
+mult $t21, $t19, $t20
+add $t22, $r0, $t3
+mult $t23, $t9, $t22
+add $t24, $t2, $t23
+add $t24, $r0, $t21
+add $t25, $r0, $t3
+li $t26, 1
+add $t3, $t25, $t26
 
 
+li $t3, 0
+
+add $t27, $r0, $t3
+li $t28, 3
 
 
-add $t31, $r0, $t32
-add $t33, $r0, $t34
+
+add $t29, $r0, $t4
+add $t30, $r0, $t3
+mult $t31, $t9, $t30
+add $t32, $t1, $t31
+la $t33, t28
+add $t34, $t29, $t33
+add $t35, $r0, $t3
+mult $t36, $t9, $t35
+add $t37, $t2, $t36
+la $t38, t32
+add $t4, $t34, $t38
+add $t39, $r0, $t3
+li $t40, 1
+add $t3, $t39, $t40
 
 
-addi $sp, $sp, -40
-jal cal_combiniation
-addi $sp, $sp, 40
+add $t41, $r0, $t4
 
-
-add $t35, $r0, $t32
-add $t36, $r0, $t34
-
-
-addi $sp, $sp, -28
-jal cal_permutation
-addi $sp, $sp, 28
-
-
-li $t37, 0
+li $t42, 0
 
