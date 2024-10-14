@@ -16,14 +16,14 @@ int main(int argc, char** argv) {
     }
     mips32_gene_init();
     mips32_scan_and_set_table();
-    mips_file << generate_predefined_functions();
+    mips_file << mips32_generate_predefined_functions();
     ir_file.open(ir_file_name);
     while (true) {
         string cur_line = get_next_line();
         if (cur_line == "") {
             break;
         } 
-        string mips_line = mips_gene_target_code(cur_line);
+        string mips_line = mips32_gene_target_code(cur_line);
         mips_file << mips_line << endl;
     }
     

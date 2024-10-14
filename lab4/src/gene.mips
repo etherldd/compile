@@ -22,88 +22,54 @@ write:
     jr $ra
 
 main:
-    addi $sp, $sp, -164
+    addi $sp, $sp, -68
     sw $ra, 0($sp)
-    li $t0, 0
-    li $t1, 369
-    li $t2, 258
-    li $t3, 147
+    jal read
+    move $t0, $v0
+    jal read
+    move $t1, $v0
+    jal read
+    move $t2, $v0
+    move $t3, $t1
     move $t4, $t1
-    move $t5, $t2
-    add $t6, $t4, $t5
-    move $t7, $t3
-    add $s0, $t6, $t7
-    move $s1, $t1
-    move $s2, $t2
-    sub $s3, $s1, $s2
-    mult $s4, $s0, $s3
-    move $s5, $t1
-    move $s6, $t3
-    sub $s7, $s5, $s6
+    mult $t5, $t3, $t4
+    li $t6, 4
+    move $t7, $t0
+    mult $s0, $t6, $t7
+    move $s1, $t2
+    mult $s2, $s0, $s1
+    sub $s3, $t5, $s2
+    move $s4, $s3
+    li $s5, 0
+    bne $s4, $s5, v0
+    j v1
+v0:
+    li $s6, 2
+    move $a0, $s6
+    jal write
+    j v2
+v1:
+    move $s7, $s3
     sw $t0, 0($fp)
-    div $t0, $s4, $s7
-    sw $t1, 4($fp)
-    move $t1, $t0
+    li $t0, 0
+    bne $s7, $t0, v3
+    j v4
+v3:
+    sw $t1, 0($fp)
+    li $t1, 1
     move $a0, $t1
     jal write
-    sw $t2, 8($fp)
-    move $t2, $t0
-    sw $t3, 12($fp)
-    move $t3, $t0
-    sw $t4, 16($fp)
-    li $t4, 2
-    sw $t5, 20($fp)
-    mult $t5, $t3, $t4
-    sw $t6, 24($fp)
-    sw $t7, 28($fp)
-    move $t6, $t7
-    sw $s0, 32($fp)
-    li $s0, 3
-    sw $s1, 36($fp)
-    mult $s1, $t6, $s0
-    sw $s2, 40($fp)
-    div $s2, $t5, $s1
-    add $t0, $t2, $s2
-    sw $s3, 44($fp)
-    move $s3, $t0
-    move $a0, $s3
+    j v5
+v4:
+    sw $t2, 0($fp)
+    li $t2, 0
+    move $a0, $t2
     jal write
-    sw $s4, 48($fp)
-    sw $s5, 52($fp)
-    move $s4, $s5
-    sw $s6, 56($fp)
-    sw $s7, 60($fp)
-    move $s6, $s7
-    sw $t0, 64($fp)
-    mult $t0, $s4, $s6
-    sw $t1, 68($fp)
-    move $t1, $s7
-    sw $t2, 72($fp)
-    move $t2, $t7
-    sw $t3, 76($fp)
-    mult $t3, $t1, $t2
-    sw $t4, 80($fp)
-    add $t4, $t0, $t3
-    sw $t5, 84($fp)
-    move $t5, $t7
-    sw $t6, 88($fp)
-    move $t6, $s5
-    sw $t7, 12($fp)
-    mult $t7, $t5, $t6
-    sw $s0, 92($fp)
-    add $s0, $t4, $t7
-    sw $s1, 96($fp)
-    sw $s2, 100($fp)
-    move $s1, $s2
-    sw $s3, 104($fp)
-    add $s3, $s0, $s1
-    sw $s4, 108($fp)
-    move $s4, $s3
-    move $a0, $s4
-    jal write
-    sw $s5, 4($fp)
-    li $s5, 0
-    move $v0, $s5
+v5:
+v2:
+    sw $t3, 0($fp)
+    li $t3, 0
+    move $v0, $t3
     lw $ra, 0($sp)
-    addi $sp, $sp, 164
+    addi $sp, $sp, 68
     jr $ra
