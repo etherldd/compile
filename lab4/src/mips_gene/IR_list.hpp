@@ -3,8 +3,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <iostream>
+#include <vector>
+#include <cstring>
 using namespace std;
 
 enum { IR_CONSTANT, IR_VARIABLE, IR_GET_ADDR, IR_DE_REF};
@@ -66,4 +68,9 @@ void ir_list_append(IR_LIST* l, IR_list_NODE* add);
 void ir_list_append_IR(IR_LIST* l, IR* add);
 
 void ir_write_to_file(IR_LIST* l, char* path);
+
+
+vector<string>  ir_split(string s);
+Operand         oprStringToOpr(string opr_s);
+IR*             irStringToIR(string ir_s);
 #endif

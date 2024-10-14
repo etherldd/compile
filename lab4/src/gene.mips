@@ -1,72 +1,109 @@
 
+.data
+_prompt: .asciiz "Enter an integer:"
+_ret: .asciiz "\n"
+.globl main
+.text
+read:
+    li $v0, 4
+    la $a0, _prompt
+    syscall
+    li $v0, 5
+    syscall
+    jr $ra
 
-add $t1, $sp, 160
+write:
+    li $v0, 1
+    syscall
+    li $v0, 4
+    la $a0, _ret
+    syscall
+    move $v0, $0
+    jr $ra
 
-add $t2, $sp, 160
-li $t3, 0
-li $t4, 0
-
-add $t5, $r0, $t3
-li $t6, 3
-
-
-
-
-add $t7, $r0, $t3
-mult $t8, $t9, $t7
-add $t10, $t1, $t8
-add $t10, $r0, $t11
-add $t12, $r0, $t3
-li $t13, 1
-add $t3, $t12, $t13
-
-
-li $t3, 0
-
-add $t14, $r0, $t3
-li $t15, 3
-
-
-
-add $t16, $r0, $t3
-mult $t17, $t9, $t16
-add $t18, $t1, $t17
-la $t19, t14
-li $t20, 2
-mult $t21, $t19, $t20
-add $t22, $r0, $t3
-mult $t23, $t9, $t22
-add $t24, $t2, $t23
-add $t24, $r0, $t21
-add $t25, $r0, $t3
-li $t26, 1
-add $t3, $t25, $t26
-
-
-li $t3, 0
-
-add $t27, $r0, $t3
-li $t28, 3
-
-
-
-add $t29, $r0, $t4
-add $t30, $r0, $t3
-mult $t31, $t9, $t30
-add $t32, $t1, $t31
-la $t33, t28
-add $t34, $t29, $t33
-add $t35, $r0, $t3
-mult $t36, $t9, $t35
-add $t37, $t2, $t36
-la $t38, t32
-add $t4, $t34, $t38
-add $t39, $r0, $t3
-li $t40, 1
-add $t3, $t39, $t40
-
-
-add $t41, $r0, $t4
-
-li $t42, 0
-
+main:
+    addi $sp, $sp, -164
+    sw $ra, 0($sp)
+    li $t0, 0
+    li $t1, 369
+    li $t2, 258
+    li $t3, 147
+    move $t4, $t1
+    move $t5, $t2
+    add $t6, $t4, $t5
+    move $t7, $t3
+    add $s0, $t6, $t7
+    move $s1, $t1
+    move $s2, $t2
+    sub $s3, $s1, $s2
+    mult $s4, $s0, $s3
+    move $s5, $t1
+    move $s6, $t3
+    sub $s7, $s5, $s6
+    sw $t0, 0($fp)
+    div $t0, $s4, $s7
+    sw $t1, 4($fp)
+    move $t1, $t0
+    move $a0, $t1
+    jal write
+    sw $t2, 8($fp)
+    move $t2, $t0
+    sw $t3, 12($fp)
+    move $t3, $t0
+    sw $t4, 16($fp)
+    li $t4, 2
+    sw $t5, 20($fp)
+    mult $t5, $t3, $t4
+    sw $t6, 24($fp)
+    sw $t7, 28($fp)
+    move $t6, $t7
+    sw $s0, 32($fp)
+    li $s0, 3
+    sw $s1, 36($fp)
+    mult $s1, $t6, $s0
+    sw $s2, 40($fp)
+    div $s2, $t5, $s1
+    add $t0, $t2, $s2
+    sw $s3, 44($fp)
+    move $s3, $t0
+    move $a0, $s3
+    jal write
+    sw $s4, 48($fp)
+    sw $s5, 52($fp)
+    move $s4, $s5
+    sw $s6, 56($fp)
+    sw $s7, 60($fp)
+    move $s6, $s7
+    sw $t0, 64($fp)
+    mult $t0, $s4, $s6
+    sw $t1, 68($fp)
+    move $t1, $s7
+    sw $t2, 72($fp)
+    move $t2, $t7
+    sw $t3, 76($fp)
+    mult $t3, $t1, $t2
+    sw $t4, 80($fp)
+    add $t4, $t0, $t3
+    sw $t5, 84($fp)
+    move $t5, $t7
+    sw $t6, 88($fp)
+    move $t6, $s5
+    sw $t7, 12($fp)
+    mult $t7, $t5, $t6
+    sw $s0, 92($fp)
+    add $s0, $t4, $t7
+    sw $s1, 96($fp)
+    sw $s2, 100($fp)
+    move $s1, $s2
+    sw $s3, 104($fp)
+    add $s3, $s0, $s1
+    sw $s4, 108($fp)
+    move $s4, $s3
+    move $a0, $s4
+    jal write
+    sw $s5, 4($fp)
+    li $s5, 0
+    move $v0, $s5
+    lw $ra, 0($sp)
+    addi $sp, $sp, 164
+    jr $ra
